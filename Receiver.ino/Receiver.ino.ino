@@ -1,7 +1,7 @@
 #include <RFM69.h>
 #include <string.h>
 
-#define NETWORKID 100
+#define NETWORKID 2
 #define NODEID 1
 #define RECEIVER 2
 
@@ -44,7 +44,7 @@ void loop() {
     String received = Serial.readStringUntil("/n");
     const char* buff = received.c_str();
     if (not radio.sendWithRetry(RECEIVER, buff, strlen(buff))) {
-      
+      Serial.println("Could not send the packet!");
     }
     delay(250);
   }
