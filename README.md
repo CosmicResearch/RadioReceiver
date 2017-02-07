@@ -1,6 +1,6 @@
 # RadioReceiver
 
-This is an Arduino radio receiver for the RFM69 transceiver. This along with the [MissionControl software](https://github.com/CosmicResearch/MissionControl) if we use to track our rockets.
+This is an Arduino radio receiver for the RFM69 transceiver. This along with the [MissionControl software](https://github.com/CosmicResearch/MissionControl) is what we use to track our rockets.
 
 This works with an Arduino UNO. Might not work with other Arduinos/MCUs.
 
