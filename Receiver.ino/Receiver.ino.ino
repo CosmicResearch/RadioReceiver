@@ -1,5 +1,6 @@
 #include <RFM69.h>
 #include <string.h>
+#include <stdio.h>
 
 #define NETWORKID 2
 #define NODEID 1
@@ -45,6 +46,10 @@ void loop() {
     const char* buff = received.c_str();
     if (not radio.sendWithRetry(RECEIVER, buff, strlen(buff))) {
       Serial.println("Could not send the packet!");
+    }
+    else {
+      Serial.print("RSSI: ");
+      Serial.println(radio.RSSI);
     }
     delay(250);
   }
