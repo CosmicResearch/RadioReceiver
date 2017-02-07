@@ -40,16 +40,14 @@ void loop() {
     if (radio.ACKRequested()) {
       radio.sendACK();
     }
+    Serial.print("RSSI: ");
+    Serial.println(radio.RSSI);
   }
   if (Serial.available() > 0) {
     String received = Serial.readStringUntil("/n");
     const char* buff = received.c_str();
     if (not radio.sendWithRetry(RECEIVER, buff, strlen(buff))) {
       Serial.println("Could not send the packet!");
-    }
-    else {
-      Serial.print("RSSI: ");
-      Serial.println(radio.RSSI);
     }
     delay(250);
   }
