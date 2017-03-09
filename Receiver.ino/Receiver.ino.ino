@@ -1,4 +1,11 @@
 #include <RFM69.h>
+#include <RFM69_ATC.h>
+#include <RFM69_OTA.h>
+#include <RFM69registers.h>
+
+#include <SPIFlash.h>
+#include <SPI.h>
+#include <RFM69.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -7,7 +14,7 @@
 #define RECEIVER 2
 
 #define FREQUENCY RF69_433MHZ
-#define ENCRIPTKEY "ENCRIPT_KEY"
+#define ENCRIPTKEY "HOLA"
 #define IS_RFM69HCW true
 
 #define SERIAL_BAUD   115200
@@ -18,37 +25,37 @@
 #define RFM69_RST     9
 
 RFM69 radio;
+int i = 0;
 
 void setup() {
   while(!Serial);
   Serial.begin(SERIAL_BAUD);
-
   pinMode(RFM69_RST, OUTPUT);
   digitalWrite(RFM69_RST, HIGH);
   delay(100);
   digitalWrite(RFM69_RST, LOW);
+  delay(100);
 
-  radio = RFM69(RFM69_CS, RFM69_IRQ, IS_RFM69HCW, RFM69_IRQN);
-  radio.initialize(FREQUENCY, NODEID, NETWORKID);
+  radio.initialize(RF69_433MHZ, 1, 2);
   radio.setHighPower();
-  radio.encrypt(ENCRIPTKEY);  
+  radio.setPowerLevel(31);
+  radio.encrypt("1234567890123456");
+  radio.receiveDone();
+  delay(1000);
 }
 
 void loop() {
   if (radio.receiveDone()) {
-    Serial.println((char*)radio.DATA);
     if (radio.ACKRequested()) {
       radio.sendACK();
     }
-    Serial.print("RSSI: ");
     Serial.println(radio.RSSI);
   }
   if (Serial.available() > 0) {
-    String received = Serial.readStringUntil("/n");
+    String received = Serial.readStringUntil("\n");
     const char* buff = received.c_str();
-    if (not radio.sendWithRetry(RECEIVER, buff, strlen(buff))) {
-      Serial.println("Could not send the packet!");
-    }
+    radio.sendWithRetry(RECEIVER, buff, strlen(buff));
     delay(250);
   }
+  Serial.flush();
 }
